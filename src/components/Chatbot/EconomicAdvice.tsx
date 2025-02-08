@@ -9,11 +9,14 @@ interface Message {
 const EconomicAdvice: React.FC = () => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([
-        { sender: "bot", text: "안녕? 도움이 필요하니? 내가 도와줄게!" }
+        { sender: "bot", text: "안녕? 나는 조언봇이야! 도움이 필요하니? 내가 도와줄게!" }
     ]);
+    const [isFetching, setIsFetching] = useState(false);
 
     const handleSend = async () => {
-        if (!input.trim()) return;
+        if (!input.trim() || isFetching) return;
+
+        setIsFetching(true);
 
         // 사용자 메시지 추가
         const userMessage: Message = { sender: "user", text: input };
@@ -26,20 +29,27 @@ const EconomicAdvice: React.FC = () => {
             .join("\n");
 
         const aiPrompt = `
-        나는 너의 친한 대학생 친구야.
-        정말 솔직하게 편하게 얘기해줘. 알겠어?
-        경제적 조언이 필요해. 좀 도와줘. 그리고 3줄 이내로 짧게 조언해줘.
-        다음은 대화 내역이야: ${recentMessages}
-        `;
-
-        const aiResponse = await fetchAIResponse(aiPrompt);
-        if (aiResponse) {
-            const aiMessage: Message = { sender: "bot", text: aiResponse };
-            setMessages((prevMessages) => [...prevMessages, aiMessage]);
-        }
+    나는 너의 친한 대학생 친구야.
+    정말 솔직하게 편하게 얘기해줘. 알겠어?
+    경제적 조언이 필요해. 좀 도와줘. 그리고 3줄 이내로 짧게 조언해줘.
+    다음은 대화 내역이야: ${recentMessages}
+    `;
 
         // 입력창 초기화
         setInput("");
+
+        try {
+            const aiResponse = await fetchAIResponse(aiPrompt);
+            if (aiResponse) {
+                const aiMessage: Message = { sender: "bot", text: aiResponse };
+                setMessages((prevMessages) => [...prevMessages, aiMessage]);
+            }
+        } catch (error) {
+            console.error("AI 응답 오류:", error);
+        } finally {
+            setIsFetching(false);  // AI 요청 종료
+        }
+
     };
 
     return (
@@ -54,10 +64,10 @@ const EconomicAdvice: React.FC = () => {
                         } mb-4 transition-all duration-300`}
                     >
                         <div
-                            className={`max-w-md p-4 rounded-2xl shadow-lg ${
+                            className={`max-w-md p-4 rounded-3xl shadow-lg text-lg font-medium ${
                                 message.sender === "user"
-                                    ? "bg-blue-500 text-white rounded-br-none"
-                                    : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
+                                    ? "bg-blue-600 text-white rounded-br-none"
+                                    : "bg-white text-gray-900 rounded-bl-none"
                             }`}
                         >
                             <p className="text-sm leading-relaxed">{message.text}</p>

@@ -60,7 +60,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                 ))}
 
                 {/* 각 날짜 별 Task와 합산 표시 */}
-                {daysInFebruary.map(({ date }) => {
+                {daysInFebruary.map(({date}) => {
                     const dateTasks = tasks.filter((t) => t && t.date && t.date === date);  // 날짜에 해당하는 Task만 가져오기
                     const dateTotal = dateTasks.reduce((sum, task) => sum + task.amount, 0);
 
@@ -73,7 +73,8 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                             {dateTasks.length > 0 ? (
                                 <div>
                                     {dateTasks.map((task) => (
-                                        <p key={task.id} className="font-medium text-sm text-gray-800">{task.content}</p>
+                                        <p key={task.id}
+                                           className="font-medium text-sm text-gray-800">{task.content}</p>
                                     ))}
                                     <p className={`font-bold mt-1 ${dateTotal > 0 ? 'text-blue-500' : 'text-red-500'}`}>
                                         {dateTotal.toLocaleString()}

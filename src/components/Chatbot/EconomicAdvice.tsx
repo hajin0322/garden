@@ -1,5 +1,6 @@
-import React, {useState} from "react";
-import {fetchAIResponse} from "../../services/geminiApiService.ts";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { fetchAIResponse } from "../../services/geminiApiService.ts";
 
 interface Message {
     sender: "bot" | "user";
@@ -25,7 +26,9 @@ const EconomicAdvice: React.FC = () => {
         // 최근 대화 내역 (마지막 5개)
         const recentMessages = messages
             .slice(-5)
-            .map((msg) => ` ${msg.sender === "user" ? "사용자" : "AI"}: ${msg.text}`)
+            .map(
+                (msg) => ` ${msg.sender === "user" ? "사용자" : "AI"}: ${msg.text}`
+            )
             .join("\n");
 
         const aiPrompt = `
@@ -55,24 +58,29 @@ const EconomicAdvice: React.FC = () => {
     return (
         <div className="flex flex-col rounded-2xl h-screen bg-gradient-to-b from-indigo-50 to-white">
             {/* 메시지 대화 창 */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100">
                 {messages.map((message, index) => (
-                    <div
+                    <motion.div
                         key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
                         className={`flex ${
                             message.sender === "user" ? "justify-end" : "justify-start"
-                        } mb-4 transition-all duration-300`}
+                        } mb-4`}
                     >
                         <div
-                            className={`max-w-md p-4 rounded-3xl shadow-lg text-lg font-medium ${
+                            className={`max-w-full md:max-w-lg p-4 md:p-6 rounded-2xl shadow-lg ${
                                 message.sender === "user"
-                                    ? "bg-blue-600 text-white rounded-br-none"
-                                    : "bg-white text-gray-900 rounded-bl-none"
+                                    ? "bg-blue-500 text-white rounded-br-none border border-blue-400"
+                                    : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
                             }`}
                         >
-                            <p className="text-sm leading-relaxed">{message.text}</p>
+                            <p className="text-base md:text-lg leading-relaxed">
+                                {message.text}
+                            </p>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
@@ -81,7 +89,7 @@ const EconomicAdvice: React.FC = () => {
                 <div className="flex items-center space-x-3">
                     <input
                         type="text"
-                        className="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200"
+                        className="flex-1 p-3 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200"
                         placeholder="메시지를 입력하세요..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
@@ -89,7 +97,7 @@ const EconomicAdvice: React.FC = () => {
                     />
                     <button
                         onClick={handleSend}
-                        className="px-5 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md transition-all duration-200 focus:outline-none"
+                        className="px-5 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-md transition-all duration-200 focus:outline-none text-lg transform hover:scale-105"
                     >
                         전송
                     </button>

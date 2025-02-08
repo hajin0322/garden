@@ -84,17 +84,34 @@ const ConsumptionPattern: React.FC<ConsumptionPatternProps> = ({ tasks }) => {
                     <XAxis
                         dataKey="date"
                         type="number"
+                        scale="time"
                         domain={['dataMin', 'dataMax']}
+                        ticks={[
+                            new Date(startDate).getTime(),
+                            new Date(todayDate).getTime(),
+                            new Date('2025-02-28').getTime()
+                        ]}
                         tickFormatter={(tick) => new Date(tick).toISOString().split('T')[0]}
-                        tick={{fontSize: 12}}
+                        tick={{ fontSize: 12, fontWeight: 20 }}
                     />
-                    <Tooltip labelFormatter={(label) => new Date(label).toISOString().split('T')[0]}/>
+                    <Tooltip
+                        labelFormatter={(label) => `날짜: ${new Date(label).toISOString().split('T')[0]}`}
+                        formatter={(value, name) => {
+                            if (name === 'value') {
+                                return [`${value.toLocaleString()}원`, '현재 예산'];
+                            } else if (name === 'goalValue') {
+                                return [`${value.toLocaleString()}원`, '목표 예산'];
+                            }
+                            return [value, name];
+                        }}
+                        isAnimationActive={false}
+                    />
                     <Line type="monotone" data={data} dataKey="value" stroke="#2563eb" strokeWidth={3}/>
-                    <Line type="monotone" data={goalData} dataKey="goalValue" stroke="#f43f5e" strokeWidth={1}
+                    <Line type="natural" data={goalData} dataKey="goalValue" stroke="#f43f5e" strokeWidth={1} dot={false} activeDot={false}
                           strokeDasharray="5 5"/>
                 </LineChart>
             </ResponsiveContainer>
-            <p className="mt-4 text-lg font-medium">현재까지 저축 목표와 실제 자산 차이:</p>
+            <p className="mt-4 text-lg font-medium">목표 예산와 현재 자산 차이:</p>
             <p className={difference >= 0 ? 'mt-4 text-lg font-medium text-blue-500' : 'mt-4 text-lg font-medium text-red-500'}>
                 {difference.toLocaleString()}원
             </p>

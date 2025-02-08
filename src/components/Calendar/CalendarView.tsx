@@ -9,6 +9,8 @@ interface CalendarViewProps {
 
 const getWeekday = (date: string) => new Date(date).getDay();
 
+const getDayFromDate = (date: string) => date.split("-")[2];
+
 const modalVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
@@ -72,27 +74,30 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                 {daysInFebruary.map(({date}) => {
                     const dateTasks = tasks.filter((t) => t && t.date && t.date === date);  // 날짜에 해당하는 Task만 가져오기
                     const dateTotal = dateTasks.reduce((sum, task) => sum + task.amount, 0);
+                    const dateDay = getDayFromDate(date);
                     return (
                         <div
                             key={date}
                             className="bg-white p-4 rounded-lg shadow text-center overflow-hidden cursor-pointer hover:shadow-lg transition"
                             onClick={() => setSelectedDate(date)}
                         >
-                            <p className="text-sm font-medium text-gray-600">{date}</p>
-                            {dateTasks.length > 0 ? (
-                                <div>
-                                    {dateTasks.map((task) => (
-                                        <p key={task.id} className="font-medium text-sm text-gray-800">
-                                            {task.content}
+                            <p className="text-sm font-medium text-xl font-bold text-gray-600">{dateDay}</p>
+                            <div className="flex flex-col justify-center items-center flex-1 min-h-7">
+                                {dateTasks.length > 0 ? (
+                                    <>
+                                        {dateTasks.map((task) => (
+                                            <p key={task.id} className="font-medium text-sm text-gray-800">
+                                                {task.content}
+                                            </p>
+                                        ))}
+                                        <p className={`font-bold mt-1 ${dateTotal > 0 ? "text-blue-500" : "text-red-500"}`}>
+                                            {dateTotal.toLocaleString()}
                                         </p>
-                                    ))}
-                                    <p className={`font-bold mt-1 ${dateTotal > 0 ? "text-blue-500" : "text-red-500"}`}>
-                                        {dateTotal.toLocaleString()}
-                                    </p>
-                                </div>
-                            ) : (
-                                <p className="text-gray-400">-</p>
-                            )}
+                                    </>
+                                ) : (
+                                    <p className="text-gray-400"></p>
+                                )}
+                            </div>
                         </div>
                     );
                 })}
@@ -103,9 +108,9 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                 {selectedDate && (
                     <motion.div
                         className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
                     >
                         <motion.div
                             variants={modalVariants}
@@ -117,7 +122,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                             {/* 헤더 */}
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-semibold text-gray-900">
-                                    {selectedDate} - 태스크 추가
+                                    {selectedDate}: 기록 추가
                                 </h3>
                                 <button
                                     onClick={() => setSelectedDate(null)}

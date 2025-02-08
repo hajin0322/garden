@@ -197,7 +197,7 @@ const MovingBlurBackground: React.FC = () => {
                             </h1>
                         </div>
                         <p className="text-lg text-gray-300 mt-4">
-                            당신의 충동적 소비를 막아드리겠습니다 <br />
+                            당신의 충동적 소비를 막아드리겠습니다. <br />
                             지금 바로 안전한 재정관리를 경험해보세요!
                         </p>
                     </div>

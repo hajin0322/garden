@@ -1,16 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Line, LineChart, ResponsiveContainer, Tooltip, XAxis} from 'recharts';
-import {Task} from "../services/taskStoreService.ts";
+import {Task} from "../../services/taskStoreService.ts";
+import {getUserInfo} from "../../services/userInfoStoreService.ts";
 
 
 interface ConsumptionPatternProps {
     tasks: Task[];
 }
 
-// -------------------------------------------
-// 목표 소비 지출
-const goalBudget = -900000;
-// -------------------------------------------
 
 // 모든 날짜를 채워주는 함수
 const fillMissingDates = (tasks: Task[], start: string, end: string) => {
@@ -23,7 +20,7 @@ const fillMissingDates = (tasks: Task[], start: string, end: string) => {
                 dateSummary[task.date] += task.amount;
             } else {
                 dateSummary[task.date] = task.amount;
-            }    
+            }
         }
     });
 
@@ -62,14 +59,24 @@ const createGoalDate = (goal: number, start: string, end: string) => {
     return goalData;
 }
 
-const ConsumptionPattern: React.FC<ConsumptionPatternProps> = ({tasks}) => {
+const ConsumptionPattern: React.FC<ConsumptionPatternProps> = ({ tasks }) => {
+    const [goalBudget, setGoalBudget] = useState<number>(0);
+
+    useEffect(() => {
+        const userInfo = getUserInfo();
+        if (userInfo) {
+            setGoalBudget(userInfo.goalBudget);
+        }
+    }, []);
+
+
     const startDate = '2025-02-01';
     const todayDate = new Date().toISOString().split('T')[0];
     const data = fillMissingDates(tasks, startDate, todayDate);
-    const goalData = createGoalDate(goalBudget, startDate, '2025-02-28');
+    const goalData = createGoalDate(-goalBudget, startDate, '2025-02-28');
 
     const finalSpent = data[data.length - 1]?.value || 0;
-    const difference = -(goalBudget - finalSpent);
+    const difference = -(-goalBudget - finalSpent);
 
     return (
         <div className="border rounded-lg p-6 shadow-md">

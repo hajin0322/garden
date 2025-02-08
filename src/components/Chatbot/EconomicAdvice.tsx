@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {fetchAIResponse} from "../services/geminiApiService.ts";
+import {fetchAIResponse} from "../../services/geminiApiService.ts";
 
 interface Message {
     sender: 'bot' | 'user';

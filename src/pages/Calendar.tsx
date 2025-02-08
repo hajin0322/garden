@@ -2,7 +2,7 @@ import BasicLayout from "../layouts/BasicLayout.tsx";
 import CalendarView from "../components/Calendar/CalendarView.tsx";
 import ConsumptionPattern from "../components/Calendar/ConsumptionPattern.tsx";
 import {useState} from "react";
-import {addTask, getTasks, Task} from "../components/services/taskStoreService.ts";
+import {addTask, getTasks, Task} from "../services/taskStoreService.ts";
 
 const Calendar = () => {
     const [tasks, setTasks] = useState<Task[]>(getTasks());

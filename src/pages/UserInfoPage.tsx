@@ -4,6 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 
+export interface userInfo {
+    consumptionHabit: string;
+    usingPurpose: string;
+    gender: string;
+    age: number;
+    goalBudget: string;
+    categories: {
+        식비: number;
+        의류: number;
+        여가: number;
+        교통: number;
+        기타: number;
+    }
+}
+
+
 Chart.register(...registerables);
 
 const fadeVariant = {
@@ -38,7 +54,7 @@ const UserInfo: React.FC = () => {
     const [step, setStep] = useState(1);
 
     // Step 1: 소비 습관 슬라이더
-    const [spending, setSpending] = useState(50);
+    const [consumptionHabit, setConsumptionHabit] = useState(50);
     const spendingLevels = [
         "💰 엄청 절약하는 편!",
         "🔍 좀 절약하는 편!",
@@ -46,13 +62,13 @@ const UserInfo: React.FC = () => {
         "💸 돈이 새어나가는 편!",
         "🛍️ 돈이 펑펑나가는 편!",
     ];
-    const spendingIndex = Math.min(Math.floor(spending / 20), 4);
+    const spendingIndex = Math.min(Math.floor(consumptionHabit / 20), 4);
     const spendingText = spendingLevels[spendingIndex];
 
     // Step 2: 사용 이유 다중 선택
-    const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+    const [usingPurpose, setUsingPurpose] = useState<string[]>([]);
     const handleReasonClick = (reason: string) => {
-        setSelectedReasons((prev) =>
+        setUsingPurpose((prev) =>
             prev.includes(reason) ? prev.filter((r) => r !== reason) : [...prev, reason]
         );
     };
@@ -61,15 +77,15 @@ const UserInfo: React.FC = () => {
     const [gender, setGender] = useState("");
     const [age, setAge] = useState("");
 
-    // Step 4: 올해 저축 목표
-    const [savingGoal, setSavingGoal] = useState("");
+    // Step 4: 한 달 소비 목표
+    const [goalBudget, setGoalBudget] = useState("");
 
-    // Step 5: 교통비 & 4가지 카테고리 (0~25, 5단위)
-    const [transportCost, setTransportCost] = useState("");
+    // Step 5: 5가지 카테고리 (0~25, 5단위)
     const [categories, setCategories] = useState({
         식비: 0,
         의류: 0,
         여가: 0,
+        교통: 0,
         기타: 0,
     });
 
@@ -78,13 +94,12 @@ const UserInfo: React.FC = () => {
 
     // 폼 리셋 → Step 1 & 팝업
     const resetForm = () => {
-        setSpending(50);
-        setSelectedReasons([]);
+        setConsumptionHabit(50);
+        setUsingPurpose([]);
         setGender("");
         setAge("");
-        setSavingGoal("");
-        setTransportCost("");
-        setCategories({ 식비: 0, 의류: 0, 여가: 0, 기타: 0 });
+        setGoalBudget("");
+        setCategories({ 식비: 0, 의류: 0, 여가: 0, 교통: 0, 기타: 0 });
         setStep(1);
 
         setShowResetMessage(true);
@@ -94,12 +109,11 @@ const UserInfo: React.FC = () => {
     // "지금 바로 시작하기!" → localStorage 저장 & /home 이동
     const handleStart = () => {
         const userData = {
-            spending,         // 0 ~ 100 정수
-            selectedReasons,  // string[]
+            consumptionHabit,         // 0 ~ 100 정수
+            usingPurpose,  // string[]
             gender,           // string
             age,              // string
-            savingGoal,       // string
-            transportCost,    // string
+            goalBudget,       // string
             categories,       // { [카테고리]: number } -> 숫자(0,5,10,15,20,25)
         };
 
@@ -143,8 +157,8 @@ const UserInfo: React.FC = () => {
                             type="range"
                             min="0"
                             max="100"
-                            value={spending}
-                            onChange={(e) => setSpending(Number(e.target.value))}
+                            value={consumptionHabit}
+                            onChange={(e) => setConsumptionHabit(Number(e.target.value))}
                             className="w-full my-4"
                         />
                         <div className="text-lg font-medium text-blue-600">{spendingText}</div>
@@ -174,7 +188,7 @@ const UserInfo: React.FC = () => {
                                     <button
                                         key={reason}
                                         className={`py-2 px-4 rounded-lg font-medium border transition-all duration-300 ${
-                                            selectedReasons.includes(reason)
+                                            usingPurpose.includes(reason)
                                                 ? "bg-blue-500 text-white"
                                                 : "border-gray-300 text-gray-700 hover:bg-gray-100"
                                         }`}
@@ -187,9 +201,9 @@ const UserInfo: React.FC = () => {
                         </div>
                         <button
                             className={`mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition-all duration-300 ${
-                                selectedReasons.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+                                usingPurpose.length === 0 ? "opacity-50 cursor-not-allowed" : ""
                             }`}
-                            disabled={selectedReasons.length === 0}
+                            disabled={usingPurpose.length === 0}
                             onClick={() => setStep(3)}
                         >
                             확인 ✅
@@ -254,7 +268,7 @@ const UserInfo: React.FC = () => {
                     </motion.div>
                 )}
 
-                {/* --- Step 4: 올해 저축 목표 --- */}
+                {/* --- Step 4: 한달 소비 목표 --- */}
                 {step === 4 && (
                     <motion.div
                         initial="hidden"
@@ -263,25 +277,25 @@ const UserInfo: React.FC = () => {
                         className="flex flex-col items-center"
                     >
                         <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                            🏦 올해 저축 목표
+                            🏦 한 달 소비 목표
                         </h2>
                         <div className="w-full mb-6">
                             <label className="block text-left text-gray-600 font-medium mb-1">
-                                올해 얼마를 저축하고 싶나요?
+                                한 달에 얼마를 소비하고 싶나요?
                             </label>
                             <input
                                 type="number"
-                                value={savingGoal}
-                                onChange={(e) => setSavingGoal(e.target.value)}
+                                value={goalBudget}
+                                onChange={(e) => setGoalBudget(e.target.value)}
                                 placeholder="예: 1000000"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                         </div>
                         <button
                             className={`mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition-all duration-300 ${
-                                !savingGoal ? "opacity-50 cursor-not-allowed" : ""
+                                !goalBudget ? "opacity-50 cursor-not-allowed" : ""
                             }`}
-                            disabled={!savingGoal}
+                            disabled={!goalBudget}
                             onClick={() => setStep(5)}
                         >
                             확인 ✅
@@ -300,20 +314,6 @@ const UserInfo: React.FC = () => {
                         <h2 className="text-2xl font-semibold text-gray-900">
                             📊 소비 패턴 분석
                         </h2>
-
-                        {/* 교통비 입력 */}
-                        <div className="w-full mt-4 mb-6">
-                            <label className="block text-left text-gray-600 font-medium mb-1">
-                                교통비 (예: 50000)
-                            </label>
-                            <input
-                                type="number"
-                                value={transportCost}
-                                onChange={(e) => setTransportCost(e.target.value)}
-                                placeholder="교통비를 입력하세요"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                        </div>
 
                         <p className="mt-2 font-bold text-blue-500">
                             "주로 어디에 많이 소비하시나요?"
@@ -401,17 +401,14 @@ const UserInfo: React.FC = () => {
                             </p>
                             <p className="text-gray-600">
                                 📍 사용 이유:{" "}
-                                <span className="font-bold">{selectedReasons.join(", ")}</span>
+                                <span className="font-bold">{usingPurpose.join(", ")}</span>
                             </p>
                             <p className="text-gray-600">
                                 🙋‍♀️ 성별: <span className="font-bold">{gender}</span>, 나이:{" "}
                                 <span className="font-bold">{age}</span>
                             </p>
                             <p className="text-gray-600">
-                                🏦 올해 저축 목표: <span className="font-bold">{savingGoal}</span>
-                            </p>
-                            <p className="text-gray-600">
-                                🚎 교통비: <span className="font-bold">{transportCost}</span>
+                                🏦 한 달 소비 목표: <span className="font-bold">{goalBudget}</span>
                             </p>
                             <p className="text-gray-600 mt-2">
                                 가장 많이 배정된 카테고리:{" "}

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
-import { Task } from "../services/taskStoreService.ts";
+import { Task } from "../../services/taskStoreService.ts";
 
 interface CalendarViewProps {
     tasks: Task[];
@@ -66,14 +66,14 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
 
                     return (
                         <div key={date}
-                             className="bg-white p-4 rounded-lg shadow text-center"
+                             className="bg-white p-4 rounded-lg shadow text-center overflow-hidden"
                              onClick={() => setSelectedDate(date)}
                         >
                             <p className="text-sm font-medium text-gray-600">{date}</p>
                             {dateTasks.length > 0 ? (
                                 <div>
                                     {dateTasks.map((task) => (
-                                        <p key={task.id} className="text-sm text-gray-800">{task.content}</p>
+                                        <p key={task.id} className="font-medium text-sm text-gray-800">{task.content}</p>
                                     ))}
                                     <p className={`font-bold mt-1 ${dateTotal > 0 ? 'text-blue-500' : 'text-red-500'}`}>
                                         {dateTotal.toLocaleString()}
@@ -91,13 +91,19 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                 <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h3 className="text-lg font-bold mb-4">{selectedDate} - Task 추가</h3>
-                        <input
-                            type="text"
+                        <select
                             className="w-full p-2 mb-2 border rounded"
-                            placeholder="Task 내용"
                             value={newTaskContent}
                             onChange={(e) => setNewTaskContent(e.target.value)}
-                        />
+                        >
+                            <option value="">소비 종류 선택</option>
+                            <option value="의류비">의류비</option>
+                            <option value="식비">식비</option>
+                            <option value="여가비">여가비</option>
+                            <option value="교통비">교통비</option>
+                            <option value="기타비">기타비</option>
+                        </select>
+
                         <input
                             type="number"
                             className="w-full p-2 mb-4 border rounded"

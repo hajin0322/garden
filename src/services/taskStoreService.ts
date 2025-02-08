@@ -2,7 +2,7 @@ export interface Task {
     id: number;
     content: string;
     date: string;
-    amount: number
+    amount: number;
 }
 
 /*

@@ -1,40 +1,16 @@
 import React, {useState} from "react";
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import {fetchAIResponse} from "../services/geminiApiService.ts";
 
 interface Message {
     sender: 'bot' | 'user';
     text: string;
 }
 
-// API 키를 문자열로 전달하여 클라이언트 생성
-const client = new GoogleGenerativeAI("AIzaSyAO12QI7oyghignZhGHIPSIbqvyzOzQ4do");
-
-// 모델 인스턴스를 생성할 때 generation configuration을 함께 설정
-const model = client.getGenerativeModel({
-    model: "gemini-1.5-flash",
-    generationConfig: {         // 모델 생성 시 설정하면 이후 요청에 자동 반영됩니다.
-        temperature: 0.7,
-        maxOutputTokens: 500,
-    },
-});
-
-// Google Gemini API를 사용하여 AI 응답을 받아오는 함수
-const fetchAIResponse = async (userText: string): Promise<string> => {
-    try {
-        const response = await model.generateContent(userText);
-
-        return response.response.text();
-    } catch (error) {
-        console.error("Error fetching AI response: ", error);
-        return "오류가 발생했습니다. 다시 시도해주세요.";
-    }
-}
-
 const EconomicAdvice: React.FC = () => {
-    const [messages, setMessages] = useState<Message[]>([
-        {sender: 'bot', text: '안녕하세요! 경제적 조언이 필요하신가요? '}
-    ]);
     const [input, setInput] = useState('');
+    const [messages, setMessages] = useState<Message[]>([
+        {sender: 'bot', text: '안녕? 도움이 필요하니? 내가 도와줄게!'}
+    ]);
 
     const handleSend = async () => {
         if (!input.trim()) return;
@@ -44,9 +20,18 @@ const EconomicAdvice: React.FC = () => {
         setMessages((prevMessages) => [...prevMessages, userMessage]);
 
         // AI 메시지 추가
-        const aiResponse = await fetchAIResponse(input);
+        const recentMessages = messages.slice(-5).map((msg) => `
+            ${msg.sender === 'user' ? '사용자' : 'AI'}: ${msg.text}`).join('\n');
+        const aiPrompt = `
+        나는 너의 친한 대학생 친구야.
+        정말 솔직하게 편하게 얘기해줘. 알겠어?
+        경제적 조언이 필요해. 좀 도와줘. 그리고 3줄 이내로 짧게 조언해줘.
+        다음은 대화 내역이야: ${recentMessages}
+        `;
+
+        const aiResponse = await fetchAIResponse(aiPrompt);
         if (aiResponse) {
-            const aiMessage: Message = { sender: 'bot', text: aiResponse };
+            const aiMessage: Message = {sender: 'bot', text: aiResponse};
             setMessages((prevMessages) => [...prevMessages, aiMessage]);
         }
 

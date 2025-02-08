@@ -16,7 +16,6 @@ const Calendar = () => {
     return (
         <div>
             <BasicLayout>
-                <h1 className="text-3xl font-semibold">캘린더</h1>
                 <CalendarView tasks={tasks} onAddTask={handleAddTask}/>
                 <ConsumptionPattern tasks={tasks} />
             </BasicLayout>

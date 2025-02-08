@@ -5,7 +5,6 @@ const Chatbot = () => {
     return (
         <div>
             <BasicLayout>
-                <h1 className="text-3xl font-semibold">챗봇</h1>
                 <EconomicAdvice />
             </BasicLayout>
         </div>

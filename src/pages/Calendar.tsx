@@ -1,13 +1,13 @@
 import BasicLayout from "../layouts/BasicLayout.tsx";
 
-const Home = () => {
+const Calendar = () => {
     return (
         <div>
             <BasicLayout>
-                <h1 className="text-3xl font-semibold">홈</h1>
+                <h1 className="text-3xl font-semibold">캘린더</h1>
             </BasicLayout>
         </div>
     );
 };
 
-export default Home;
+export default Calendar;

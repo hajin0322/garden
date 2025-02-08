@@ -16,15 +16,6 @@ const heroVariants = {
     },
 };
 
-const messageVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-        opacity: 1,
-        x: 0,
-        transition: { duration: 1, ease: 'easeOut' }
-    },
-};
-
 const buttonVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
@@ -159,14 +150,18 @@ const MovingBlurBackground: React.FC = () => {
                     variants={heroVariants}
                     className="min-h-[80vh] flex flex-col justify-center text-center relative overflow-hidden"
                 >
-                    {/* 회전하는 배경 원 (영역 확장 효과) */}
+                    {/* 회전하는 배경 원 대신 로고 이미지 사용 */}
                     <motion.div
                         className="absolute inset-0 flex justify-center items-center pointer-events-none"
                         initial={{ rotate: 0 }}
                         animate={{ rotate: 360 }}
                         transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                     >
-                        <div className="w-64 h-64 border-4 border-blue-200 rounded-full opacity-20" />
+                        <img
+                            src="/circle.png"
+                            alt="circle"
+                            className="w-64 h-64 rounded-full opacity-20 object-cover"
+                        />
                     </motion.div>
                     <div className="relative">
                         <div className="flex items-center gap-3 justify-center">
@@ -177,12 +172,12 @@ const MovingBlurBackground: React.FC = () => {
                     </div>
                 </motion.section>
 
-                {/* Impact 섹션 - 방어막(쉴드) 펼쳐지는 애니메이션 (루프 적용) */}
+                {/* Impact 섹션 - heroVariants 사용 */}
                 <motion.section
                     ref={impactRef}
                     initial="hidden"
                     animate={impactInView ? 'visible' : 'hidden'}
-                    variants={messageVariants}
+                    variants={heroVariants}
                     className="min-h-[80vh] flex flex-col justify-center items-center text-center relative overflow-hidden"
                 >
                     {/* 중앙에서 펼쳐지는 방어막 효과 */}
@@ -208,20 +203,30 @@ const MovingBlurBackground: React.FC = () => {
                     </div>
                 </motion.section>
 
-                {/* CTA 섹션 */}
+                {/* CTA 섹션 - heroVariants 사용 */}
                 <motion.section
                     ref={aboutRef}
                     initial="hidden"
                     animate={aboutInView ? 'visible' : 'hidden'}
-                    variants={messageVariants}
+                    variants={heroVariants}
                     className="min-h-[80vh] flex flex-col justify-center text-center relative overflow-hidden"
                 >
-                    <div className="relative">
+                    <h2 className="text-white opacity-90 text-5xl font-bold">For Your Future</h2>
+                    {/* WonLogo 이미지를 중앙에 배치하고, object-contain으로 전체가 보이도록 설정 */}
+                    <motion.img
+                        src="/WonLogo.png"
+                        alt="Project Won Logo"
+                        className="mx-auto w-40 h-40 rounded-full object-contain"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1, ease: 'easeOut' }}
+                    />
+                    {/* 버튼 컨테이너 중앙 정렬 */}
+                    <div className="relative mt-4 flex justify-center">
                         <motion.button
                             onClick={() => navigate('/userinfo')}
                             variants={buttonVariants}
-                            // CTA 버튼 크기를 작게 조정 (py, px, 텍스트 크기 등)
-                            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-xl flex items-center gap-3 transition-all duration-300 text-base focus:outline-none"
+                            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 pr-5 rounded-full shadow-xl flex items-center gap-3 transition-all duration-300 text-base focus:outline-none"
                         >
                             <span className="animate-bounce">🚀</span>
                             지금 바로 시작하기

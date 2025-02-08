@@ -15,6 +15,7 @@ const Sidebar: React.FC = () => {
     return (
         <aside className="w-64 h-screen bg-white/50 backdrop-blur-xl border-r border-gray-200 shadow-xl p-6 flex flex-col">
             {/* 로고 */}
+
             <div className="text-2xl font-bold text-blue-600 text-center py-10 tracking-tight">
                 PROJECT WON
             </div>

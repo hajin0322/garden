@@ -56,9 +56,9 @@ const EconomicAdvice: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col rounded-2xl h-screen bg-gradient-to-b from-indigo-50 to-white">
+        <div className="flex flex-col rounded-2xl h-full bg-gradient-to-b from-indigo-50 to-white">
             {/* 메시지 대화 창 */}
-            <div className="flex-1 p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100">
+            <div className="flex-1 p-6 overflow-y-auto max-h-[80vh] scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100">
                 {messages.map((message, index) => (
                     <motion.div
                         key={index}

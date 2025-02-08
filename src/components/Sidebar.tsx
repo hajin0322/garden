@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
             {/* 로고 */}
 
             <div className="text-2xl font-bold text-blue-600 text-center py-10 tracking-tight">
-                PROJECT WON
+                WON Million
             </div>
 
             {/* 메뉴 리스트 */}

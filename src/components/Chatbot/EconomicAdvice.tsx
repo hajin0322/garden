@@ -1,10 +1,46 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { fetchAIResponse } from "../../services/geminiApiService.ts";
+import {getUserInfo} from "../../services/userInfoStoreService.ts";
+import {getTasks} from "../../services/taskStoreService.ts";
 
 interface Message {
     sender: "bot" | "user";
     text: string;
+}
+
+const generatePrompt = (messages:string): string => {
+    const userInfo = getUserInfo();
+    const tasks = getTasks();
+
+    const userInfoString = userInfo
+    ? `
+    성별: ${userInfo.gender},
+    나이: ${userInfo.age},
+    소비습관 점수: ${userInfo.consumptionHabit},
+    사용 목적: ${userInfo.usingPurpose},
+    목표 예산: ${userInfo.goalBudget}원`
+        : "사용자 정보가 없습니다.";
+
+    // 최근 수입/사용 내역 문자열화 (최대 5개)
+    const taskHistory = tasks
+        .slice(-5)
+        .map(task => `${task.date} - ${task.content}: ${task.amount.toLocaleString()}원`)
+        .join('\n');
+
+    return `
+    나는 너의 친한 대학생 친구야.
+    정말 솔직하게 편하게 얘기해줘. 알겠어?
+
+    이건 내 정보야:
+    ${userInfoString}
+
+    이건 내 최근 수입/사용 내역이야:
+    ${taskHistory}
+
+    경제적 조언이 필요해. 좀 도와줘. 그리고 3줄 이내로 짧게 조언해줘.
+    다음은 대화 내역이야: ${messages}
+    `;
 }
 
 const EconomicAdvice: React.FC = () => {
@@ -31,12 +67,7 @@ const EconomicAdvice: React.FC = () => {
             )
             .join("\n");
 
-        const aiPrompt = `
-    나는 너의 친한 대학생 친구야.
-    정말 솔직하게 편하게 얘기해줘. 알겠어?
-    경제적 조언이 필요해. 좀 도와줘. 그리고 3줄 이내로 짧게 조언해줘.
-    다음은 대화 내역이야: ${recentMessages}
-    `;
+        const aiPrompt = generatePrompt(recentMessages);
 
         // 입력창 초기화
         setInput("");

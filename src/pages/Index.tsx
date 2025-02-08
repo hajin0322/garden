@@ -166,7 +166,7 @@ const MovingBlurBackground: React.FC = () => {
                     <div className="relative">
                         <div className="flex items-center gap-3 justify-center">
                             <ShieldCheck className="text-blue-500 w-16 h-16" />
-                            <h1 className="text-6xl font-bold text-white drop-shadow-md">PROJECT WON</h1>
+                            <h1 className="text-6xl font-bold text-white drop-shadow-md">WON Million</h1>
                         </div>
                         <h2 className="text-2xl font-light text-gray-300 mt-4">당신의 재산을 지켜드려요!</h2>
                     </div>

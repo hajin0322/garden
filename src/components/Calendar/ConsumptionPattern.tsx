@@ -43,17 +43,15 @@ const fillMissingDates = (tasks: Task[], start: string, end: string) => {
 };
 
 // 목표 예산에 따른 예상 그래프 데이터 생성
-const createGoalDate = (goal: number, start: string, end: string) => {
+const createConstantGoalData = (goal: number, start: string, end: string) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
     const goalData = [];
 
-    for (let i = 0; i <= totalDays; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-        const goalValue = (goal / totalDays) * i;
-        goalData.push({date: currentDate.getTime(), goalValue: goalValue});
+    // 날짜를 순회하면서 매일 동일한 goalBudget 값으로 데이터 생성
+    while (startDate <= endDate) {
+        goalData.push({ date: startDate.getTime(), goalValue: goal });
+        startDate.setDate(startDate.getDate() + 1);
     }
 
     return goalData;
@@ -73,10 +71,10 @@ const ConsumptionPattern: React.FC<ConsumptionPatternProps> = ({ tasks }) => {
     const startDate = '2025-02-01';
     const todayDate = new Date().toISOString().split('T')[0];
     const data = fillMissingDates(tasks, startDate, todayDate);
-    const goalData = createGoalDate(-goalBudget, startDate, '2025-02-28');
+    const goalData = createConstantGoalData(goalBudget, startDate, '2025-02-28');
 
     const finalSpent = data[data.length - 1]?.value || 0;
-    const difference = -(-goalBudget - finalSpent);
+    const difference = -(goalBudget - finalSpent);
 
     return (
         <div className="border rounded-lg p-6 shadow-md">
@@ -96,7 +94,7 @@ const ConsumptionPattern: React.FC<ConsumptionPatternProps> = ({ tasks }) => {
                           strokeDasharray="5 5"/>
                 </LineChart>
             </ResponsiveContainer>
-            <p className="mt-4 text-lg font-medium">목표 예산과 실제 지출 차이:</p>
+            <p className="mt-4 text-lg font-medium">현재까지 저축 목표와 실제 자산 차이:</p>
             <p className={difference >= 0 ? 'mt-4 text-lg font-medium text-blue-500' : 'mt-4 text-lg font-medium text-red-500'}>
                 {difference.toLocaleString()}원
             </p>

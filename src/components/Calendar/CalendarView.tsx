@@ -117,7 +117,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                             {/* 헤더 */}
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-xl font-semibold text-gray-900">
-                                    {selectedDate} - Task 추가
+                                    {selectedDate} - 태스크 추가
                                 </h3>
                                 <button
                                     onClick={() => setSelectedDate(null)}
@@ -135,14 +135,15 @@ const CalendarView: React.FC<CalendarViewProps> = ({ tasks, onAddTask }) => {
                                 </button>
                             </div>
 
-                            {/* 소비 종류 선택 */}
+                            {/* 종류 선택 */}
                             <div className="mb-4">
                                 <select
                                     className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                                     value={newTaskContent}
                                     onChange={(e) => setNewTaskContent(e.target.value)}
                                 >
-                                    <option value="">소비 종류 선택</option>
+                                    <option value="">종류 선택</option>
+                                    <option value="수입">수입</option>
                                     <option value="의류비">의류비</option>
                                     <option value="식비">식비</option>
                                     <option value="여가비">여가비</option>

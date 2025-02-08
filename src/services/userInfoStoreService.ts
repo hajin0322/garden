@@ -6,6 +6,7 @@ export interface UserInfo {
     age: number;
     goalBudget: number;
     categories: {
+        수입: number;
         식비: number;
         의류: number;
         여가: number;

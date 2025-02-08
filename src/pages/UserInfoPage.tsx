@@ -268,7 +268,7 @@ const UserInfo: React.FC = () => {
                     </motion.div>
                 )}
 
-                {/* --- Step 4: 한달 소비 목표 --- */}
+                {/* --- Step 4: 한달 저축 목표 --- */}
                 {step === 4 && (
                     <motion.div
                         initial="hidden"
@@ -277,11 +277,11 @@ const UserInfo: React.FC = () => {
                         className="flex flex-col items-center"
                     >
                         <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-                            🏦 한 달 소비 목표
+                            🏦 한 달 저축 목표
                         </h2>
                         <div className="w-full mb-6">
                             <label className="block text-left text-gray-600 font-medium mb-1">
-                                한 달에 얼마를 소비하고 싶나요?
+                                한 달에 얼마를 저축하고 싶나요?
                             </label>
                             <input
                                 type="number"
@@ -408,7 +408,7 @@ const UserInfo: React.FC = () => {
                                 <span className="font-bold">{age}</span>
                             </p>
                             <p className="text-gray-600">
-                                🏦 한 달 소비 목표: <span className="font-bold">{goalBudget}</span>
+                                🏦 한 달 저축 목표: <span className="font-bold">{goalBudget}</span>
                             </p>
                             <p className="text-gray-600 mt-2">
                                 가장 많이 배정된 카테고리:{" "}

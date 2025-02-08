@@ -1,5 +1,6 @@
 import Router from "./router/Router.tsx";
 import {BrowserRouter} from "react-router-dom";
+import './styles/global.css';
 
 function App() {
     return (

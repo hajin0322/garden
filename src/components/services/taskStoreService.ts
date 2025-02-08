@@ -20,14 +20,14 @@ const initializeTasks = (): void => {
 };
 
 // LocalStorage에서 Task 데이터를 가져오는 함수
-const getTasks = (): Task[] => {
+export const getTasks = (): Task[] => {
     initializeTasks(); // 초기화 확인
     const storedData = localStorage.getItem(STORAGE_KEY);
     return storedData ? JSON.parse(storedData) : [];
 }
 
 // LocalStorage에 Task 데이터를 저장하는 함수
-const saveTasks = (task: Task[]): void => {
+export const saveTasks = (task: Task[]): void => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(task));
 }
 

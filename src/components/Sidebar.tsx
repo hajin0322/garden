@@ -11,6 +11,7 @@ const Sidebar: React.FC = () => {
 
     return (
         <nav className="flex flex-col gap-y-5 py-14">
+            <h1>BUDGET</h1>
             {navItems.map(({path, label, icon}) => (
                 <Link key={path} to={path}>
                     <div className={`relative flex items-center gap-3 px-4 py-4 rounded-lg text-black transition-all duration-2 ease-in-out`}>

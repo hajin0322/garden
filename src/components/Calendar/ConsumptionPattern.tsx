@@ -41,6 +41,11 @@ const tasks: Task[] = [
     {id: 30, content: '교통비 충전', date: '2025-02-15', amount: 41301},
 ];
 
+// -------------------------------------------
+// 목표 예산
+const goalBudget = 900000;
+// -------------------------------------------
+
 // 모든 날짜를 채워주는 함수
 const fillMissingDates = (tasks: Task[], start: string, end: string) => {
     const dateSummary: { [key: string]: number } = {};
@@ -55,7 +60,7 @@ const fillMissingDates = (tasks: Task[], start: string, end: string) => {
     });
 
     // 누락된 날짜 채우기
-    let currentDate = new Date(start);
+    const currentDate = new Date(start);
     const endDate = new Date(end);
     let cumulativeValue = 0;
     const filledData = [];
@@ -65,27 +70,60 @@ const fillMissingDates = (tasks: Task[], start: string, end: string) => {
         if (dateSummary[dateString]) {
             cumulativeValue += dateSummary[dateString];
         }
-        filledData.push({ date: dateString, value: cumulativeValue });
+        filledData.push({ date: new Date(dateString).getTime(), value: cumulativeValue });
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return filledData;
 };
 
-const data = fillMissingDates(tasks, '2025-02-01', '2025-02-28');
+const createGoalDate = (goal: number, start: string, end: string) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+    const goalData = [];
 
+    for (let i = 0; i <= totalDays; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        const goalValue = (goal / totalDays) * i;
+        goalData.push({ date: currentDate.getTime(), goalValue: goalValue });
+    }
+
+    return goalData;
+}
+
+const data = fillMissingDates(tasks, '2025-02-01', '2025-02-28');
+const goalData = createGoalDate(goalBudget, '2025-02-01', '2025-02-28')
+
+const finalSpent = data[data.length - 1].value;
+const difference = goalBudget - finalSpent;
 
 const ConsumptionPattern: React.FC = () => {
     return (
         <div className="border rounded-lg p-6 shadow-md">
             <h2 className="text-2xl font-bold mb-4">경제적 흐름 요약</h2>
             <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                    <XAxis dataKey="date" tick={{fontSize: 12}}/>
-                    <Tooltip/>
-                    <Line type="monotone" dataKey="value" stroke="#2563eb" strokeWidth={3}/>
+                <LineChart>
+                    <XAxis
+                        dataKey="date"
+                        type="number"
+                        domain={['dataMin', 'dataMax']}
+                        tickFormatter={(tick) => new Date(tick).toISOString().split('T')[0]}
+                        tick={{fontSize: 12}}
+                    />
+                    <Tooltip labelFormatter={(label) => new Date(label).toISOString().split('T')[0]}/>
+                    <Line type="monotone" data={data} dataKey="value" stroke="#2563eb" strokeWidth={3}/>
+                    <Line type="monotone" data={goalData} dataKey="goalValue" stroke="#f43f5e" strokeWidth={1}
+                          strokeDasharray="5 5"/>
                 </LineChart>
             </ResponsiveContainer>
+            <p className="mt-4 text-lg font-medium">
+                목표 예산과 실제 지출 차이:
+            </p>
+            <p className={difference >= 0 ? 'mt-4 text-lg font-medium text-blue-500': 'mt-4 text-lg font-medium text-red-500'}>
+                {difference.toLocaleString()}원
+            </p>
         </div>
     );
 };
